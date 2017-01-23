@@ -42,13 +42,15 @@ ros::Subscriber<std_msgs::Int16> flash("blink_rate", &blink_cb);
 bool light=false; // led on/off
 int count = flash_rate; // blink time (in loop cycles)
 
-const int led_1 = 12;
+const int led_1 = 13;
 
 const int kill_pin = 2;
 bool kill = LOW;
 
 const int IR_1_pin = A1;
+const int IR_2_pin = A2;
 int IR_1;
+int IR_2;
 
 
 void setup() {
@@ -61,8 +63,8 @@ void setup() {
   nh.subscribe(cmd);
   nh.subscribe(flash);
   
-  ir.data = (int16_t*) malloc(2);
-  ir.data_length = 1;
+  ir.data = (int16_t*) malloc(3);
+  ir.data_length = 2;
   
   pinMode(led_1, OUTPUT); // setup pin 12 as an output for the led
   //pinMode(IR_1_pin, INPUT);
@@ -90,7 +92,9 @@ void loop() {
   }
   
   IR_1 = analogRead(IR_1_pin);
+  IR_2 = analogRead(IR_2_pin);
   ir.data[0] = IR_1;
+  ir.data[1] = IR_2;
   ir_sensors.publish( &ir );
   
   nh.spinOnce();
